@@ -8,3 +8,5 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(__name__)
 server = app.server
+
+print("hello world!")
