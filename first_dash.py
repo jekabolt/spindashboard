@@ -33,8 +33,39 @@ app.layout = html.Div([
     html.Br(),
 
     dcc.Graph(id = 'my_bee_map', figure={}),
-
+    html.Br(),
 ])
 
+# --------------------------------------------------
+# Наполнение элементов СМЫСЛОМ
+
+@app.callback(
+    [Output(component_id="output_container", component_property='children'),
+     Output(component_id='my_bee_map', component_property='figure')],
+     [Input(component_id='slct-year', component_property='value')])
+def update_graph(option):
+    print(option)
+    print(type(option))
+
+    container = "The year chosen: {}".format(option)
+    dff = df.copy()
+    dff = dff[dff["Year"] == option]
+    dff = dff[dff["Affected by"] == "Varroa_mites"]
+
+    # plotly
+    fig = px.choropleth(
+        data_frame=dff,
+        locationmode='USA-states',
+        locations='state_code',
+        scope = "usa",
+        color= 'Pct of Colonies Impacted',
+        hover_data=['State', 'Pct of Colonies Impacted'],
+        color_continuous_scale=px.colors.sequential.YlOrRd,
+        labels={'Pct of Colonies Impacted': '% of bee colonies'},
+        template='plotly_dark'
+    )
+    return container, fig
+
+# запуск сервера
 if __name__ == '__main__':
     app.run_server(debug=True)
