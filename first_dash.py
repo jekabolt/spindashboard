@@ -5,6 +5,7 @@ import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import openpyxl
 
 app = dash.Dash(__name__)
 server = app.server
@@ -44,12 +45,7 @@ df['sales_month'] = df['Sale_Date'].str[3:5]
 df['sales_year'] = df['Sale_Date'].str[6:]
 df['sales_day'] = df['Sale_Date'].str[:2]
 
-current_month = '03'
-current_year = '2021'
-month_of_sales = df[(df['sales_month'] == current_month) & (df['sales_year'] == current_year)]
-day_order = sorted(list(month_of_sales['sales_day']))
 
-total_sales = month_of_sales['Sale_Price'].sum()
 
 # -------------------------------------------------------------------------------------------------------------------------
 # HTML ВЫКЛАДКА
@@ -59,31 +55,31 @@ app.layout = html.Div([
 
     html.H1("Here is the biggest text in the world", style={'text-align': 'center'}),
 
-    dcc.Dropdown(id="slct-month",
+    dcc.Dropdown(id="slct-year",
                  options=[
                      {'label': '2020', 'value': '2020'},
-                     {'label': '2021', 'value': '2021'}, ],
+                     {'label': '2021', 'value': '2021'} ],
                  multi=False,
-                 value=2015,
+                 value='2021',
                  style={'width': '40%'}
                  ),
     dcc.Dropdown(id="slct-month",
                  options=[
-                     {'label': 'Январь', 'value': 2015},
-                     {'label': 'Февраль', 'value': 2016},
-                     {'label': 'Март', 'value': 2017},
-                     {'label': 'Апрель', 'value': 2018},
-                     {'label': 'Май', 'value': 2015},
-                     {'label': 'Июнь', 'value': 2016},
-                     {'label': 'Июль', 'value': 2017},
-                     {'label': 'Август', 'value': 2018},
-                     {'label': 'Сентябрь', 'value': 2015},
-                     {'label': 'Октябрь', 'value': 2016},
-                     {'label': 'Ноябрь', 'value': 2017},
-                     {'label': 'Декабрь', 'value': 2018}
+                     {'label': 'Январь', 'value': '01'},
+                     {'label': 'Февраль', 'value': '02'},
+                     {'label': 'Март', 'value': '03'},
+                     {'label': 'Апрель', 'value': '04'},
+                     {'label': 'Май', 'value': '05'},
+                     {'label': 'Июнь', 'value': '06'},
+                     {'label': 'Июль', 'value': '07'},
+                     {'label': 'Август', 'value': '08'},
+                     {'label': 'Сентябрь', 'value': '09'},
+                     {'label': 'Октябрь', 'value': '10'},
+                     {'label': 'Ноябрь', 'value': '11'},
+                     {'label': 'Декабрь', 'value': '12'}
                  ],
                  multi=False,
-                 value=2015,
+                 value='03',
                  style={'width': '40%'}
                  ),
 
@@ -98,19 +94,23 @@ app.layout = html.Div([
 # Наполнение элементов СМЫСЛОМ
 
 @app.callback(
-    [Output(component_id='sale_calendar', component_property='figure')],
+    Output(component_id='sale_calendar', component_property='figure'),
     [Input(component_id='slct-year', component_property='value'),
      Input(component_id='slct-month', component_property='value')]
 )
-def update_graph(month, year):
+def update_graph(year, month):
 
     dff = df.copy()
+
     dff = dff[(dff['sales_year'] == year) & (dff['sales_month'] == month)]
 
+    day_order = sorted(list(dff['sales_day']))
     # plotly
-    fig = px.bar(month_of_sales, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order}
+    fig = px.bar(dff, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order}
                  , template="plotly_dark")
+    #
     # fig = px.choropleth(
+
     #     data_frame=dff,
     #     locationmode='USA-states',
     #     locations='state_code',
