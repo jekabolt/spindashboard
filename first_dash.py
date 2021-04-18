@@ -1,13 +1,15 @@
 import dash
 import pandas as pd
 import plotly.express as px
-import dash_table
+import plotly.graph_objects as go
+# import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import openpyxl
 
-app = dash.Dash(__name__)
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
 # -------------------------------------------------------------------------------------------------------------------------
@@ -45,20 +47,20 @@ df['sales_month'] = df['Sale_Date'].str[3:5]
 df['sales_year'] = df['Sale_Date'].str[6:]
 df['sales_day'] = df['Sale_Date'].str[:2]
 
-
-
 # -------------------------------------------------------------------------------------------------------------------------
 # HTML ВЫКЛАДКА
 # -------------------------------------------------------------------------------------------------------------------------
 
 app.layout = html.Div([
 
-    html.H1("Here is the biggest text in the world", style={'text-align': 'center'}),
+    dbc.Row([
+        dbc.Col(html.H1("Продажи за месяц", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
 
     dcc.Dropdown(id="slct-year",
                  options=[
                      {'label': '2020', 'value': '2020'},
-                     {'label': '2021', 'value': '2021'} ],
+                     {'label': '2021', 'value': '2021'}],
                  multi=False,
                  value='2021',
                  style={'width': '40%'}
@@ -84,44 +86,68 @@ app.layout = html.Div([
                  ),
 
     html.Br(),
+    dbc.Row([
 
-    dcc.Graph(id='sale_calendar', figure={}),
+        dbc.Col(
+            [dcc.Graph(id='results', figure={})
+             ], width={"size": 3}
+        ),
+
+        dbc.Col(dcc.Graph(id='sale_calendar', figure={}), width={"size": 9})
+
+    ]),
+
     html.Br(),
 ])
 
 
 # --------------------------------------------------
 # Наполнение элементов СМЫСЛОМ
-
+#
 @app.callback(
-    Output(component_id='sale_calendar', component_property='figure'),
+    [Output(component_id='sale_calendar', component_property='figure'),
+     Output(component_id='results', component_property='figure')
+
+     ],
     [Input(component_id='slct-year', component_property='value'),
      Input(component_id='slct-month', component_property='value')]
 )
 def update_graph(year, month):
-
     dff = df.copy()
-
+    print(month, year)
     dff = dff[(dff['sales_year'] == year) & (dff['sales_month'] == month)]
 
     day_order = sorted(list(dff['sales_day']))
-    # plotly
-    fig = px.bar(dff, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order}
-                 , template="plotly_dark")
-    #
-    # fig = px.choropleth(
+    calendar = px.bar(dff, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order},
+                      labels={'sales_day': 'День', 'Sale_Price': 'Цена продажи', 'Plat': 'Площадка'}
+                      )
 
-    #     data_frame=dff,
-    #     locationmode='USA-states',
-    #     locations='state_code',
-    #     scope="usa",
-    #     color='Pct of Colonies Impacted',
-    #     hover_data=['State', 'Pct of Colonies Impacted'],
-    #     color_continuous_scale=px.colors.sequential.YlOrRd,
-    #     labels={'Pct of Colonies Impacted': '% of bee colonies'},
-    #     template='plotly_dark'
+    results = go.Figure()
+    wheres = set(dff['Plat'])
+    n = len(wheres)
+    k = 0
+    for i in wheres:
+        results.add_trace(
+            go.Indicator(
+                mode="number+delta",
+                value=dff.loc[dff['Plat'] == i, 'Sale_Price'].sum(),
+                number={'prefix': i + ": ", "font": {"size": 20}},
+                # delta={'reference': 8000000},
+                domain={'x': [0, 1], 'y': [k / (n + 1), (k + 1) / (n + 1)]},
 
-    return fig
+            )
+        )
+        k += 1
+    results.add_trace(
+        go.Indicator(
+            mode="number+delta",
+            value=dff['Sale_Price'].sum(),
+            number={'prefix': "Всего: ", "font": {"size": 20}},
+            # delta={'position': "top", 'reference': 8000000},
+            domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
+
+
+    return calendar, results
 
 
 # запуск сервера

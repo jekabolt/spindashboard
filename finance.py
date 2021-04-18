@@ -2,11 +2,6 @@
 import dash
 import pandas as pd
 import plotly.express as px
-import dash_table
-import dash_core_components as dcc
-import dash_html_components as html
-import openpyxl
-from dash.dependencies import Input, Output
 
 # ------------------------------------------------------------------------------------------------------------
 # получаем данные о продажах
@@ -14,7 +9,6 @@ df = pd.read_excel('goods.xlsx', usecols="A,C:E,G,H,Z,AD,AF:AI,AN,AP", skiprows=
                    names=['id', 'Status', 'Date', 'Sale_Date', 'Owner', 'Rule', 'First_Price', 'Sale_Price', 'Ship',
                           'Pay_Cost', 'Plat_Cost', 'Recover', 'Plat', 'Seller'], engine='openpyxl',
                    converters={'id': str, 'Sale_Price': int})
-df = df[df['Status'] == "Продажа"].drop(columns='Status')
 dict_of_plats = {None: 'Grailed',
                  'VK': 'VK',
                  'Avito': 'Avito',
@@ -37,25 +31,25 @@ dict_of_plats = {None: 'Grailed',
                  'Heroine': 'Grailed'}
 df['Plat'] = df['Plat'].replace(dict_of_plats)
 df['Sale_Date'] = pd.to_datetime(df['Sale_Date'])
-df['sales_month'] = df['Sale_Date'].str[3:5]
-df['sales_year'] = df['Sale_Date'].str[6:]
-df['sales_day'] = df['Sale_Date'].str[:2]
-
+df['month'] = df['Date'].str[3:5]
+df['year'] = df['Date'].str[6:]
+df['day'] = df['Date'].str[:2]
 current_month = '03'
 current_year = '2021'
-month_of_sales = df[(df['sales_month'] == current_month) & (df['sales_year'] == current_year)]
-month_of_sales = month_of_sales.sort_values('sales_day')
-day_order = sorted(list(month_of_sales['sales_day']))
-
-total_sales = month_of_sales['Sale_Price'].sum()
-fig = px.bar(month_of_sales, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order}
-             , template="plotly_dark")
-
-fig.show()
-# # # ------------------------------------------------------------------------------------------------------------
+month_of_sales = df[(df['month'] == current_month) & (df['year'] == current_year)]
+print(month_of_sales.shape)
+# month_of_sales = month_of_sales.sort_values('sales_day')
+# day_order = sorted(list(month_of_sales['sales_day']))
 #
-# app = dash.Dash(__name__)
-# server = app.server
+# total_sales = month_of_sales['Sale_Price'].sum()
+# fig = px.bar(month_of_sales, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order}
+#              , template="plotly_dark")
+#
+# fig.show()
+# # # # ------------------------------------------------------------------------------------------------------------
+# #
+# # app = dash.Dash(__name__)
+# # server = app.server
 # app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 # ------------------------------------------------------------------------------------------------------------
 #
