@@ -1,4 +1,5 @@
 import dash
+import dash_auth
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -11,6 +12,16 @@ import openpyxl
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
+
+
+VALID_USERNAME_PASSWORD_PAIRS = {
+    'kek': 'kek'
+}
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
+
 
 # -------------------------------------------------------------------------------------------------------------------------
 # ДАННЫЕ
@@ -54,7 +65,18 @@ df['sales_day'] = df['Sale_Date'].str[:2]
 app.layout = html.Div([
 
     dbc.Row([
-        dbc.Col(html.H1("Продажи за месяц", style={'text-align': 'center'}),
+        dbc.Col(html.H1("data range selector", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
+
+    dbc.Row([
+        dbc.Col(html.A("graph 1", href="#graph-1", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
+    dbc.Row([
+            dbc.Col(html.A("graph 2", href="#graph-2", style={'text-align': 'center'}),
+                    width={"size": 8, "offset": 2}, )]),
+
+    dbc.Row([
+        dbc.Col(html.A("graph 3", href="#graph-3", style={'text-align': 'center'}),
                 width={"size": 8, "offset": 2}, )]),
 
     dcc.Dropdown(id="slct-year",
@@ -86,15 +108,47 @@ app.layout = html.Div([
                  ),
 
     html.Br(),
-    dbc.Row([
 
+    dbc.Row([
+        dbc.Col(html.H1("total moth sales", id="graph-1", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
+
+    dbc.Row([
         dbc.Col(
             [dcc.Graph(id='results', figure={})
              ], width={"size": 3}
         ),
-
         dbc.Col(dcc.Graph(id='sale_calendar', figure={}), width={"size": 9})
 
+    ]),
+
+
+    # --
+
+    dbc.Row([
+        dbc.Col(html.H1("total moth sales 2", id="graph-2", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
+
+    dbc.Row([
+        dbc.Col(
+            [dcc.Graph(id='results-2', figure={})
+             ], width={"size": 3}
+        ),
+        dbc.Col(dcc.Graph(id='sale_calendar-2', figure={}), width={"size": 9})
+    ]),
+
+    # --
+
+    dbc.Row([
+        dbc.Col(html.H1("total moth sales 3", id="graph-3", style={'text-align': 'center'}),
+                width={"size": 8, "offset": 2}, )]),
+
+    dbc.Row([
+        dbc.Col(
+            [dcc.Graph(id='results-3', figure={})
+             ], width={"size": 3}
+        ),
+        dbc.Col(dcc.Graph(id='sale_calendar-3', figure={}), width={"size": 9})
     ]),
 
     html.Br(),
@@ -106,7 +160,10 @@ app.layout = html.Div([
 #
 @app.callback(
     [Output(component_id='sale_calendar', component_property='figure'),
-     Output(component_id='results', component_property='figure')
+     Output(component_id='results', component_property='figure'),
+     #  Output(component_id='sale_calendar-2', component_property='figure'),
+     #  Output(component_id='results-2', component_property='figure'),
+
 
      ],
     [Input(component_id='slct-year', component_property='value'),
@@ -119,7 +176,8 @@ def update_graph(year, month):
 
     day_order = sorted(list(dff['sales_day']))
     calendar = px.bar(dff, x='sales_day', y='Sale_Price', color='Plat', category_orders={'sales_day': day_order},
-                      labels={'sales_day': 'День', 'Sale_Price': 'Цена продажи', 'Plat': 'Площадка'}
+                      labels={'sales_day': 'День',
+                              'Sale_Price': 'Цена продажи', 'Plat': 'Площадка'}
                       )
 
     results = go.Figure()
@@ -145,7 +203,6 @@ def update_graph(year, month):
             number={'prefix': "Всего: ", "font": {"size": 20}},
             # delta={'position': "top", 'reference': 8000000},
             domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
-
 
     return calendar, results
 
