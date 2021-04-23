@@ -27,7 +27,14 @@ auth = dash_auth.BasicAuth(
 )
 
 # layout
-app.layout = layout.get_layout()
+app.layout = layout.url_bar_and_content_div
+
+app.validation_layout = html.Div([
+    layout.url_bar_and_content_div,
+    layout.layout_index,
+    layout.layout_page_1,
+    layout.layout_page_2,
+])
 
 df = goods.get_goods_df()
 
@@ -82,6 +89,16 @@ def update_graph_live(year, month):
     return calendar, results
 
 
-# запуск сервера
+@app.callback(Output('page-content', 'children'),
+              Input('url', 'pathname'))
+def display_page(pathname):
+    if pathname == "/page-1":
+        return layout.layout_page_1
+    elif pathname == "/page-2":
+        return layout.layout_page_2
+    else:
+        return layout.layout_index
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
