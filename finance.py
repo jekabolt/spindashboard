@@ -37,7 +37,7 @@ df['day'] = df['Date'].str[:2]
 current_month = '03'
 current_year = '2021'
 month_of_sales = df[(df['month'] == current_month) & (df['year'] == current_year)]
-print(month_of_sales.shape)
+print("---" + month_of_sales.shape)
 # month_of_sales = month_of_sales.sort_values('sales_day')
 # day_order = sorted(list(month_of_sales['sales_day']))
 #
