@@ -15,6 +15,8 @@ layout_index = html.Div([
 
 
 layout_page_1 = html.Div([
+    dcc.Link('home', href='/'),
+
 
     html.Br(),
     html.Br(),
@@ -113,6 +115,7 @@ layout_page_1 = html.Div([
 
 
 layout_page_2 = html.Div([
+    dcc.Link('home', href='/'),
 
     html.Br(),
     html.Br(),
