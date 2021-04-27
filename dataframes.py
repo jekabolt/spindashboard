@@ -39,5 +39,6 @@ def get_goods_df():
     df['sales_month'] = df['Sale_Date'].str[3:5]
     df['sales_year'] = df['Sale_Date'].str[6:]
     df['sales_day'] = df['Sale_Date'].str[:2]
+    df['count'] = 1
 
     return df
