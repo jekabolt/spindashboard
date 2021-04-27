@@ -4,7 +4,6 @@ import pandas as pd
 
 
 def get_goods_df():
-
     goods_fp = os.environ.get('FILEPATH_GOODS')
     if not os.path.isfile(goods_fp):
         # not exist
