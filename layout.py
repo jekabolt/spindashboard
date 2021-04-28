@@ -83,7 +83,7 @@ layout_page_1 = html.Div([
     # --
 
     dbc.Row([
-            dbc.Col(html.H1("total moth sales 2", id="graph-2", style={'text-align': 'center'}),
+            dbc.Col(html.H1("total in-kind sales 2", id="graph-2", style={'text-align': 'center'}),
                     width={"size": 8, "offset": 2}, )]),
 
     dbc.Row([
