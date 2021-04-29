@@ -21,20 +21,20 @@ layout_page_1 = html.Div([
     html.Br(),
     html.Br(),
 
-    dbc.Row([
-            dbc.Col(html.H1("data range selector", style={'text-align': 'center'}),
-                    width={"size": 8, "offset": 2}, )]),
-
-    dbc.Row([
-            dbc.Col(html.A("graph 1", href="#graph-1", style={'text-align': 'center'}),
-                    width={"size": 8, "offset": 2}, )]),
-    dbc.Row([
-            dbc.Col(html.A("graph 2", href="#graph-2", style={'text-align': 'center'}),
-                    width={"size": 8, "offset": 2}, )]),
-
-    dbc.Row([
-            dbc.Col(html.A("graph 3", href="#graph-3", style={'text-align': 'center'}),
-                    width={"size": 8, "offset": 2}, )]),
+    # dbc.Row([
+    #         dbc.Col(html.H1("data range selector", style={'text-align': 'center'}),
+    #                 width={"size": 8, "offset": 2}, )]),
+    #
+    # dbc.Row([
+    #         dbc.Col(html.A("graph 1", href="#graph-1", style={'text-align': 'center'}),
+    #                 width={"size": 8, "offset": 2}, )]),
+    # dbc.Row([
+    #         dbc.Col(html.A("graph 2", href="#graph-2", style={'text-align': 'center'}),
+    #                 width={"size": 8, "offset": 2}, )]),
+    #
+    # dbc.Row([
+    #         dbc.Col(html.A("graph 3", href="#graph-3", style={'text-align': 'center'}),
+    #                 width={"size": 8, "offset": 2}, )]),
 
     dcc.Dropdown(id="slct-year",
                  options=[

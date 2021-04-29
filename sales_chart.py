@@ -16,7 +16,6 @@ def register_sales_chart_callbacks(app):
     )
     def update_graph_live(year, month):
         df = server.goods_df.copy()
-        print(month, year)
         df = df[(df['sales_year'] == year) & (df['sales_month'] == month)]
 
         day_order = sorted(list(df['sales_day']))
@@ -61,8 +60,6 @@ def register_sales_chart_callbacks(app):
     )
     def update_graph_live(year, month):
         df = server.goods_df.copy()
-        print(df)
-        print(month, year)
         df = df[(df['sales_year'] == year) & (df['sales_month'] == month)]
 
         day_order = sorted(list(df['sales_day']))
