@@ -34,10 +34,6 @@ app.validation_layout = html.Div([
 ])
 
 
-# init dataframes
-goods_df = dataframes.get_goods_df()
-
-
 # init charts callbacks
 sales_chart.register_sales_chart_callbacks(app)
 
@@ -52,3 +48,7 @@ def display_page(pathname):
         return layout.layout_page_2
     else:
         return layout.layout_index
+
+
+# init dataframes
+goods_df = dataframes.get_goods_df()
