@@ -1,1 +1,1 @@
-web: gunicorn first_dash:server
+web: gunicorn main:server
