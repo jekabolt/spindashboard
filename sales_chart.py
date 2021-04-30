@@ -1,4 +1,4 @@
-import server
+import router
 import plotly.express as px
 import plotly.graph_objects as go
 import layout
@@ -7,7 +7,7 @@ from dash.dependencies import Input, Output
 
 def register_sales_chart_callbacks(app):
     # first plot
-    @server.app.callback(
+    @router.app.callback(
         [Output(component_id='sale_calendar', component_property='figure'),
          Output(component_id='results', component_property='figure'),
          ],
@@ -15,7 +15,7 @@ def register_sales_chart_callbacks(app):
          Input(component_id='slct-month', component_property='value')]
     )
     def update_graph_live(year, month):
-        df = server.goods_df.copy()
+        df = router.goods_df.copy()
         df = df.drop_duplicates()
         df = df[(df['sales_year'] == year) & (df['sales_month'] == month)]
 
@@ -52,7 +52,7 @@ def register_sales_chart_callbacks(app):
 
         return calendar, results
 
-    @server.app.callback(
+    @router.app.callback(
         [Output(component_id='sale_calendar-2', component_property='figure'),
          Output(component_id='results-2', component_property='figure'),
          ],
@@ -60,7 +60,7 @@ def register_sales_chart_callbacks(app):
          Input(component_id='slct-month', component_property='value')]
     )
     def update_graph_live(year, month):
-        df = server.goods_df.copy()
+        df = router.goods_df.copy()
         df = df.drop_duplicates(subset=['id'])
         df = df[(df['sales_year'] == year) & (df['sales_month'] == month)]
 
@@ -98,7 +98,7 @@ def register_sales_chart_callbacks(app):
 
         return calendar, results
 
-    @server.app.callback(
+    @router.app.callback(
         [Output(component_id='sale_calendar-3', component_property='figure'),
          Output(component_id='results-3', component_property='figure'),
          Output(component_id='goods', component_property='figure')
@@ -107,7 +107,7 @@ def register_sales_chart_callbacks(app):
          Input(component_id='slct-month', component_property='value')]
     )
     def update_graph_live(year, month):
-        df = server.goods_df.copy()
+        df = router.goods_df.copy()
         df['Storage'] = df.Storage.fillna('Не указано')
         df1 = df.copy()
         df1 = df1[df1['Status'] == 'Приемка']

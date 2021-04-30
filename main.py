@@ -1,6 +1,6 @@
-import server
+import router
 import ftp
 import os
 
 if __name__ == '__main__':
-    server.app.run_server(debug=True)
+    router.app.run_server(debug=True)
