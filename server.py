@@ -9,6 +9,9 @@ import layout
 import dataframes
 import sales_chart
 
+# init dataframes
+goods_df = dataframes.get_goods_df()
+
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
@@ -48,7 +51,3 @@ def display_page(pathname):
         return layout.layout_page_2
     else:
         return layout.layout_index
-
-
-# init dataframes
-goods_df = dataframes.get_goods_df()

@@ -29,9 +29,6 @@ def get_goods(local_goods_file_path="goods.xlsx"):
             latest_time = time
 
     print(latest_name)
-
-    print("\n\n keek ", latest_name)
-
     # ftp_file_name = now.strftime("%y_%m_%d")+".xlsx"
     # ftp_file_name = "21_04_28.xlsx"
     ftp_file_name = latest_name
