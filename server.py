@@ -12,7 +12,6 @@ import sales_chart
 # init dataframes
 goods_df = dataframes.get_goods_df()
 
-
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 

@@ -7,11 +7,12 @@ def get_goods_df():
     goods_fp = os.environ.get('FILEPATH_GOODS')
     if not os.path.isfile(goods_fp):
         # not exist
+        print("not exist")
         ftp.get_goods(goods_fp)
 
     df = pd.read_excel(goods_fp, usecols="A,C:E,G,H,Z,AD,AE,AF:AI,AN,AP,AX,AY", skiprows=3,
-                       names=['id', 'Status', 'Date', 'Sale_Date', 'Owner', 'Rule', 'First_Price', 'Sale_Price','Vypl', 'Ship',
-                              'Pay_Cost', 'Plat_Cost', 'Recover', 'Plat', 'Seller','Vypl_Counted','Storage'], engine='openpyxl',
+                       names=['id', 'Status', 'Date', 'Sale_Date', 'Owner', 'Rule', 'First_Price', 'Sale_Price', 'Vypl', 'Ship',
+                              'Pay_Cost', 'Plat_Cost', 'Recover', 'Plat', 'Seller', 'Vypl_Counted', 'Storage'], engine='openpyxl',
                        converters={'id': str, 'Sale_Price': int})
     dict_of_plats = {None: 'Grailed',
                      'VK': 'VK',
