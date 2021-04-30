@@ -116,7 +116,8 @@ def register_sales_chart_callbacks(app):
         active = df.copy()
 
         active = active[active['Status'] == 'Приемка']
-        print(active)
+        # print(active)
+        # TODO:
         active['Storage'] = active.Storage.fillna('Не указано')
         day_order = sorted(list(active['get_day']))
         calendar = px.bar(active, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
@@ -150,9 +151,9 @@ def register_sales_chart_callbacks(app):
                 domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
 
         goods = px.pie(df1,
-               names = 'Storage',
-               values= 'count',
-                       height = 800,
+                       names='Storage',
+                       values='count',
+                       height=800,
                        width=800)
 
         return calendar, results, goods
