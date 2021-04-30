@@ -16,8 +16,8 @@ def get_goods(local_goods_file_path="goods.xlsx"):
 
     now = datetime.datetime.now()
 
-    ftp_file_name = now.strftime("%y_%m_%d")+".xlsx"
-    # ftp_file_name = "21_04_28.xlsx"
+    # ftp_file_name = now.strftime("%y_%m_%d")+".xlsx"
+    ftp_file_name = "21_04_28.xlsx"
     with open(local_goods_file_path, 'wb') as local_goods_file_path:
         ftp.retrbinary('retr ' + ftp_file_name, local_goods_file_path.write)
     ftp.close()
