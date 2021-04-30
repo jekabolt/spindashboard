@@ -9,11 +9,10 @@ def get_goods_df():
         # not exist
         ftp.get_goods(goods_fp)
 
-    df = pd.read_excel(goods_fp, usecols="A,C:E,G,H,Z,AD,AF:AI,AN,AP", skiprows=3,
-                       names=['id', 'Status', 'Date', 'Sale_Date', 'Owner', 'Rule', 'First_Price', 'Sale_Price', 'Ship',
-                              'Pay_Cost', 'Plat_Cost', 'Recover', 'Plat', 'Seller'], engine='openpyxl',
+    df = pd.read_excel(goods_fp, usecols="A,C:E,G,H,Z,AD,AE,AF:AI,AN,AP,AX,AY", skiprows=3,
+                       names=['id', 'Status', 'Date', 'Sale_Date', 'Owner', 'Rule', 'First_Price', 'Sale_Price','Vypl', 'Ship',
+                              'Pay_Cost', 'Plat_Cost', 'Recover', 'Plat', 'Seller','Vypl_Counted','Storage'], engine='openpyxl',
                        converters={'id': str, 'Sale_Price': int})
-    df = df[df['Status'] == "Продажа"].drop(columns='Status')
     dict_of_plats = {None: 'Grailed',
                      'VK': 'VK',
                      'Avito': 'Avito',
@@ -39,6 +38,10 @@ def get_goods_df():
     df['sales_month'] = df['Sale_Date'].str[3:5]
     df['sales_year'] = df['Sale_Date'].str[6:]
     df['sales_day'] = df['Sale_Date'].str[:2]
-    df['count'] = 1
+    df['get_month'] = df['Date'].str[3:5]
+    df['get_year'] = df['Date'].str[6:]
+    df['get_day'] = df['Date'].str[:2]
 
+    df['count'] = 1
+    df = df.drop_duplicates(subset=['id'])
     return df

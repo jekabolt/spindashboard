@@ -60,14 +60,14 @@ layout_page_1 = html.Div([
                      {'label': 'Декабрь', 'value': '12'}
                  ],
                  multi=False,
-                 value='03',
+                 value='04',
                  style={'width': '40%'}
                  ),
 
     html.Br(),
 
     dbc.Row([
-            dbc.Col(html.H1("total moth sales", id="graph-1", style={'text-align': 'center'}),
+            dbc.Col(html.H1("Продажи за месяц", id="graph-1", style={'text-align': 'center'}),
                     width={"size": 8, "offset": 2}, )]),
 
     dbc.Row([
@@ -83,7 +83,7 @@ layout_page_1 = html.Div([
     # --
 
     dbc.Row([
-            dbc.Col(html.H1("total in-kind sales 2", id="graph-2", style={'text-align': 'center'}),
+            dbc.Col(html.H1("Проданные товары", id="graph-2", style={'text-align': 'center'}),
                     width={"size": 8, "offset": 2}, )]),
 
     dbc.Row([
@@ -98,7 +98,7 @@ layout_page_1 = html.Div([
     # --
 
     dbc.Row([
-            dbc.Col(html.H1("total moth sales 3", id="graph-3", style={'text-align': 'center'}),
+            dbc.Col(html.H1("Принятые товары", id="graph-3", style={'text-align': 'center'}),
                     width={"size": 8, "offset": 2}, )]),
 
     dbc.Row([
@@ -109,6 +109,11 @@ layout_page_1 = html.Div([
             dbc.Col(dcc.Graph(id='sale_calendar-3',
                     figure={}), width={"size": 9})
             ]),
+    dbc.Row([
+            dbc.Col(
+                dcc.Graph(id='goods', figure={}), width={"size": 4, "offset": 4}
+            )
+    ]),
 
     html.Br(),
 ])
