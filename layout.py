@@ -109,11 +109,22 @@ layout_page_1 = html.Div([
             dbc.Col(dcc.Graph(id='sale_calendar-3',
                     figure={}), width={"size": 9})
             ]),
+
+    # --
+    #     dbc.Row([
+    #             dbc.Col(
+    #                 dcc.Graph(id='goods', figure={}), width={"size": 4, "offset": 4}
+    #             )
+    #             ]),
+
     dbc.Row([
             dbc.Col(
-                dcc.Graph(id='goods', figure={}), width={"size": 4, "offset": 4}
-            )
-    ]),
+                [dcc.Graph(id='results-4', figure={})
+                 ], width={"size": 3}
+            ),
+            dbc.Col(dcc.Graph(id='goods',
+                    figure={}), width={"size": 9})
+            ]),
 
     html.Br(),
 ])
