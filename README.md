@@ -4,9 +4,8 @@
 
 ### Pre-Requisites
 
-#### Clone Did Resolver Support Repositories
+#### Install dependences 
 
-##### Install dependences 
 `make dep`
 
 
@@ -16,8 +15,6 @@
 `source .env`
 
 ```
-.env
-
 export FTP_USER="un"
 export FTP_PASSWORD="pw"
 export FTP_PORT="16761"
