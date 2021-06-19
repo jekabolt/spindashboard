@@ -1,6 +1,7 @@
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_bootstrap_components as dbc
+from datetime import datetime
 
 url_bar_and_content_div = html.Div([
     dcc.Location(id='url', refresh=False),
@@ -41,7 +42,7 @@ layout_page_1 = html.Div([
                      {'label': '2020', 'value': '2020'},
                      {'label': '2021', 'value': '2021'}],
                  multi=False,
-                 value='2021',
+                 value=datetime.now().strftime('%Y'),
                  style={'width': '40%'}
                  ),
     dcc.Dropdown(id="slct-month",
@@ -60,7 +61,7 @@ layout_page_1 = html.Div([
                      {'label': 'Декабрь', 'value': '12'}
                  ],
                  multi=False,
-                 value='04',
+                 value=datetime.now().strftime('%m'),
                  style={'width': '40%'}
                  ),
 
@@ -110,13 +111,10 @@ layout_page_1 = html.Div([
                     figure={}), width={"size": 9})
             ]),
 
-    # --
-    #     dbc.Row([
-    #             dbc.Col(
-    #                 dcc.Graph(id='goods', figure={}), width={"size": 4, "offset": 4}
-    #             )
-    #             ]),
 
+    dbc.Row([
+            dbc.Col(html.H1("Принятые товары pie", id="graph-3", style={'text-align': 'center'}),
+                    width={"size": 8, "offset": 2}, )]),
     dbc.Row([
             dbc.Col(
                 [dcc.Graph(id='results-4', figure={})

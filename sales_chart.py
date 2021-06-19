@@ -173,8 +173,7 @@ def register_sales_chart_callbacks(app):
         active = df.copy()
 
         active = active[active['Status'] == 'Приемка']
-        # print(active)
-        # TODO:
+
         active['Storage'] = active.Storage.fillna('Не указано')
         day_order = sorted(list(active['get_day']))
         calendar = px.bar(active, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
@@ -182,35 +181,40 @@ def register_sales_chart_callbacks(app):
                                   'count': 'Колличество принятых товаров', 'Plat': 'Место хранения'}
                           )
 
-        results = go.Figure()
-        wheres = set(active['Storage'])
-        n = len(wheres)
-        k = 0
-        for i in wheres:
-            results.add_trace(
-                go.Indicator(
-                    mode="number",
-                    value=active.loc[active['Storage'] == i, 'count'].count(),
-                    number={'prefix': i + ": ", "font": {"size": 20}},
-                    # delta={'reference': 8000000},
-                    domain={'x': [0, 1], 'y': [
-                        k / (n + 1), (k + 1) / (n + 1)]},
+        storage = df.copy()['Storage']
+        dictStorage = {}
+        total_count_periiod = 0
+        for i in storage:
+            if i in dictStorage:
+                dictStorage[i] += 1
+                total_count_periiod += 1
+            else:
+                dictStorage[i] = 1
+                total_count_periiod += 1
 
-                )
-            )
-            k += 1
-        results.add_trace(
-            go.Indicator(
-                mode="number+delta",
-                value=active['count'].count(),
-                number={'prefix': "Всего: ", "font": {"size": 20}},
-                # delta={'position': "top", 'reference': 8000000},
-                domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
+        dictPercentage = {}
+        s = sum(dictStorage.values())
+        for k, v in dictStorage.items():
+            pct = v * 100.0 / s
+            dictPercentage[k] = str(format(pct, '.2f'))
 
-        goods = px.pie(df1,
-                       names='Storage',
-                       values='count',
-                       height=800,
-                       width=800)
+        persent_values = dictPercentage.values()
+        print("persent_values", persent_values)
 
-        return results, goods
+        percents = list(persent_values)
+
+        goods = px.pie(
+            names=[*dictStorage],
+            values=[*percents],
+            height=800,
+            width=800)
+        # print(dictPercentage)
+
+        table = go.Figure(data=[
+            go.Table(
+                header=dict(values=['source', 'percentage']),
+                # cells=dict(values=[]))
+                cells=dict(values=[[*dictStorage], [*percents]]))
+        ])
+
+        return table, goods
