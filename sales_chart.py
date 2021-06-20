@@ -2,6 +2,7 @@ import router
 import plotly.express as px
 import plotly.graph_objects as go
 import layout
+import dataframes_utils
 from dash.dependencies import Input, Output
 
 
@@ -108,31 +109,27 @@ def register_sales_chart_callbacks(app):
          Input(component_id='slct-month', component_property='value')]
     )
     def update_graph_live(year, month):
-        df = router.goods_df.copy()
-        df['Storage'] = df.Storage.fillna('Не указано')
 
-        df = df[(df['get_year'] == year) & (df['get_month'] == month)]
-        active = df.copy()
+        storage = dataframes_utils.get_current_goods_acceptance_df(year, month)
 
-        active = active[active['Status'] == 'Приемка']
-        # print(active)
-        # TODO:
-        active['Storage'] = active.Storage.fillna('Не указано')
-        day_order = sorted(list(active['get_day']))
-        calendar = px.bar(active, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
+        # active = df.copy()
+
+        day_order = sorted(list(storage['get_day']))
+        calendar = px.bar(storage, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
                           labels={'get_day': 'День',
                                   'count': 'Колличество принятых товаров', 'Plat': 'Место хранения'}
                           )
 
         results = go.Figure()
-        wheres = set(active['Storage'])
+        wheres = set(storage['Storage'])
         n = len(wheres)
         k = 0
         for i in wheres:
             results.add_trace(
                 go.Indicator(
                     mode="number",
-                    value=active.loc[active['Storage'] == i, 'count'].count(),
+                    value=storage.loc[storage['Storage']
+                                      == i, 'count'].count(),
                     number={'prefix': i + ": ", "font": {"size": 20}},
                     # delta={'reference': 8000000},
                     domain={'x': [0, 1], 'y': [
@@ -144,7 +141,7 @@ def register_sales_chart_callbacks(app):
         results.add_trace(
             go.Indicator(
                 mode="number+delta",
-                value=active['count'].count(),
+                value=storage['count'].count(),
                 number={'prefix': "Всего: ", "font": {"size": 20}},
                 # delta={'position': "top", 'reference': 8000000},
                 domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
@@ -164,57 +161,32 @@ def register_sales_chart_callbacks(app):
         ]
     )
     def update_graph_live(year, month):
-        df = router.goods_df.copy()
-        df['Storage'] = df.Storage.fillna('Не указано')
-        df1 = df.copy()
-        df1 = df1[df1['Status'] == 'Приемка']
 
-        df = df[(df['get_year'] == year) & (df['get_month'] == month)]
-        active = df.copy()
+        storage = dataframes_utils.get_current_goods_acceptance(year, month)
 
-        active = active[active['Status'] == 'Приемка']
+        # count total amount per category
+        storage_map, total_count_period = dataframes_utils.count_map(storage)
 
-        active['Storage'] = active.Storage.fillna('Не указано')
-        day_order = sorted(list(active['get_day']))
-        calendar = px.bar(active, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
-                          labels={'get_day': 'День',
-                                  'count': 'Колличество принятых товаров', 'Plat': 'Место хранения'}
-                          )
-
-        storage = df.copy()['Storage']
-        dictStorage = {}
-        total_count_periiod = 0
-        for i in storage:
-            if i in dictStorage:
-                dictStorage[i] += 1
-                total_count_periiod += 1
-            else:
-                dictStorage[i] = 1
-                total_count_periiod += 1
-
-        dictPercentage = {}
-        s = sum(dictStorage.values())
-        for k, v in dictStorage.items():
+        # count percentage
+        percentage_map = {}
+        s = sum(storage_map.values())
+        for k, v in storage_map.items():
             pct = v * 100.0 / s
-            dictPercentage[k] = str(format(pct, '.2f'))
+            percentage_map[k] = str(format(pct, '.2f'))
 
-        persent_values = dictPercentage.values()
-        print("persent_values", persent_values)
-
-        percents = list(persent_values)
+        percents = list(percentage_map.values())
 
         goods = px.pie(
-            names=[*dictStorage],
+            names=[*storage_map],
             values=[*percents],
-            height=800,
-            width=800)
-        # print(dictPercentage)
+            height=600,
+            width=600)
 
         table = go.Figure(data=[
             go.Table(
-                header=dict(values=['source', 'percentage']),
-                # cells=dict(values=[]))
-                cells=dict(values=[[*dictStorage], [*percents]]))
+                header=dict(
+                    values=['source', 'percentage', 'units in volume']),
+                cells=dict(values=[[*storage_map], [*percents], [*list(storage_map.values())]]))
         ])
 
         return table, goods
