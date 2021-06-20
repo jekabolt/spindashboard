@@ -166,7 +166,7 @@ def register_sales_chart_callbacks(app):
     )
     def update_graph_live(year, month):
 
-        storage = dataframes_utils.get_current_goods_acceptance(year, month)
+        storage = dataframes_utils.get_all_time_goods_acceptance_active()
 
         # count total amount per category
         storage_map, total_count_period = dataframes_utils.count_map(storage)
