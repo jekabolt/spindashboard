@@ -110,43 +110,47 @@ def register_sales_chart_callbacks(app):
     )
     def update_graph_live(year, month):
 
-        storage = dataframes_utils.get_current_goods_acceptance_df(year, month)
+        storage_df = dataframes_utils.get_current_goods_acceptance_df(
+            year, month)
 
-        # active = df.copy()
+        plot = px.bar(storage_df,
+                      x='get_day',
+                      y='count',
+                      color='Storage',
+                      category_orders={
+                          'get_day': sorted(list(storage_df['get_day']))
+                      },
+                      labels={'get_day': 'День',
+                              'count': 'Колличество принятых товаров',
+                              'Plat': 'Место хранения'}
+                      )
 
-        day_order = sorted(list(storage['get_day']))
-        calendar = px.bar(storage, x='get_day', y='count', color='Storage', category_orders={'get_day': day_order},
-                          labels={'get_day': 'День',
-                                  'count': 'Колличество принятых товаров', 'Plat': 'Место хранения'}
-                          )
-
-        results = go.Figure()
-        wheres = set(storage['Storage'])
-        n = len(wheres)
+        plot_legend = go.Figure()
+        storage = set(storage_df['Storage'])
+        n = len(storage)
         k = 0
-        for i in wheres:
-            results.add_trace(
+        for i in storage:
+            plot_legend.add_trace(
                 go.Indicator(
                     mode="number",
-                    value=storage.loc[storage['Storage']
-                                      == i, 'count'].count(),
+                    value=storage_df.loc[
+                        storage_df['Storage'] == i, 'count'].count(),
                     number={'prefix': i + ": ", "font": {"size": 20}},
-                    # delta={'reference': 8000000},
+
                     domain={'x': [0, 1], 'y': [
                         k / (n + 1), (k + 1) / (n + 1)]},
-
                 )
             )
             k += 1
-        results.add_trace(
+
+        plot_legend.add_trace(
             go.Indicator(
                 mode="number+delta",
-                value=storage['count'].count(),
+                value=storage_df['count'].count(),
                 number={'prefix': "Всего: ", "font": {"size": 20}},
-                # delta={'position': "top", 'reference': 8000000},
                 domain={'x': [0, 1], 'y': [n / (n + 1), 1]},))
 
-        return calendar, results
+        return plot, plot_legend
 
     # fourth pie
 
